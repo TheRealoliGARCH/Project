@@ -16,7 +16,9 @@ def read_country(filename):
     rows = []
     with (DATA / filename).open(newline="", encoding="utf-8") as handle:
         for row in csv.DictReader(handle):
-            rows.append((float(row["maturity_years"]), float(row["yield_decimal"])))
+            maturity = float(row["maturity_years"])
+            yield_decimal = float(row["yield_percent"]) / 100.0
+            rows.append((maturity, yield_decimal))
     rows.sort()
     return [m for m, _ in rows], transform_yields([y for _, y in rows])
 
