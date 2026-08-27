@@ -1,13 +1,17 @@
-\documentclass[12pt]{article}
-
+\documentclass[a4paper,10pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
-\usepackage{booktabs}
+\usepackage{float}
 \usepackage{array}
-\usepackage{longtable}
+\usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\usepackage{booktabs}
+\usepackage{longtable}
 \usepackage{enumitem}
+\usepackage{hyperref}
+
+\usetikzlibrary{arrows.meta, calc, positioning, fit}
 \pgfplotsset{compat=1.18}
 
 \newtheorem{definition}{Definition}[section]
@@ -18,16 +22,22 @@
 \theoremstyle{remark}
 \newtheorem{remark}{Remark}[section]
 
-\title{Nelson--Siegel--Svensson Estimation of Greek and Italian Sovereign Discount Curves}
-\author{Soumadeep Ghosh}
-\date{}
+\title{\textbf{Nelson--Siegel--Svensson Estimation of\\
+		Greek and Italian Sovereign Discount Curves}\\
+	{Theory, Identification, Data Architecture, and\\
+		Multidisciplinary Implications}}
+\author{Lord Soumadeep Ghosh with ChatGPT (OpenAI)}
+\date{Kolkata, India}
 
 \begin{document}
+
 \maketitle
 
 \begin{abstract}
 A discount factor converts a future unit of currency into its time-zero present value. Under continuous compounding, the discount factor at maturity $m$ is $D(m)=\exp[-m y(m)]$, where $y(m)$ is the continuously compounded zero-coupon spot yield. This paper develops a reproducible framework for comparing Greek and Italian sovereign discount curves using the Nelson--Siegel--Svensson (NSS) model. The central methodological distinction is between coupon-bond yields-to-maturity, which summarize multiple cash flows, and zero-coupon spot rates, which directly determine discount factors. We formulate country-specific NSS estimation, discuss identification and nonlinear optimization, derive the discount-factor spread, and specify a reproducible data and software architecture. A preliminary Greek cross-section illustrates the procedure; the Italian estimation is to be completed only after extraction of a sufficiently dense, common-date official Italian maturity cross-section. The framework is extended conceptually to statistics, machine learning, welfare economics, political economy, geopolitics, and sovereign risk.
 \end{abstract}
+
+\tableofcontents
 
 \section{Introduction}
 
@@ -141,7 +151,7 @@ The boundary values are
 
 The parameter roles are summarized in Table~\ref{tab:parameters}.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{NSS parameters and their interpretation.}
 \label{tab:parameters}
@@ -198,7 +208,7 @@ $y_{\mathrm{GR}}<y_{\mathrm{IT}}$.\end{proof}
 
 A preliminary Greek cross-section used seven benchmark maturities. The resulting observations were approximately as follows.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{Preliminary Greek sovereign benchmark yields.}
 \begin{tabular}{rrrrrrrr}
@@ -218,7 +228,7 @@ A preliminary nonlinear fit was approximately
 
 The fitted values were approximately:
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{Preliminary Greek NSS fit.}
 \begin{tabular}{rrr}
@@ -238,7 +248,7 @@ Maturity & Observed yield (\%) & NSS fitted yield (\%)\\
 
 The corresponding continuously compounded discount factors were approximately
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{Preliminary Greek discount factors.}
 \begin{tabular}{rr}
@@ -331,7 +341,7 @@ OUTPUT:
 
 \section{Reproducible Data Architecture}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[
 box/.style={draw, rounded corners, minimum width=3.4cm, minimum height=1cm, align=center},
@@ -480,30 +490,48 @@ The final empirical object is
 
 A complete empirical study requires a sufficiently rich, common-date Italian maturity cross-section. Until that information is extracted from the official source, the Greek fit can be treated as a preliminary demonstration, but a symmetric Italy--Greece NSS result should not be invented.
 
-\section*{Glossary}
-\begin{description}
-\item[Discount factor] Present value of one unit payable at a future maturity.
-\item[Spot yield] Continuously compounded yield on a zero-coupon claim at a given maturity.
-\item[Forward rate] Instantaneous marginal rate implied by the term structure.
-\item[Yield to maturity] Internal rate of return summarizing the discounted value of a bond's contractual cash flows.
-\item[Zero-coupon bond] Bond that pays principal only at maturity.
-\item[NSS model] Nelson--Siegel--Svensson parametric representation of a yield curve.
-\item[Bootstrapping] Recovery of discount factors from security prices and contractual cash flows.
-\item[Term structure] Maturity-dependent relationship among yields, rates, or discount factors.
-\item[Sovereign risk] Risk associated with future government repayment, restructuring, inflation, liquidity, or policy conditions.
-\item[Financial repression] Policy-induced suppression or constraint of market interest rates and financial allocation.
-\item[Levenberg--Marquardt] Nonlinear least-squares algorithm interpolating between gradient descent and Gauss--Newton methods.
-\end{description}
-
-\begin{thebibliography}{99}
+\begin{thebibliography}{8}
 \bibitem{NelsonSiegel} Nelson, C. R. and Siegel, A. F. (1987). Parsimonious Modeling of Yield Curves. \emph{Journal of Business}, 60(4), 473--489.
+
 \bibitem{Svensson} Svensson, L. E. O. (1994). Estimating and Interpreting Forward Interest Rates: Sweden 1992--1994. NBER Working Paper No. 4871.
+
 \bibitem{DieboldLi} Diebold, F. X. and Li, C. (2006). Forecasting the Term Structure of Government Bond Yields. \emph{Journal of Econometrics}, 130(2), 337--364.
+
 \bibitem{BIS} Bank for International Settlements (2005). \emph{Zero-Coupon Yield Curves: Technical Documentation}. BIS Papers No. 25.
+
 \bibitem{RasmussenWilliams} Rasmussen, C. E. and Williams, C. K. I. (2006). \emph{Gaussian Processes for Machine Learning}. MIT Press.
-\bibitem{GhoshNSS} Ghosh, S. \emph{The Nelson--Siegel--Svensson Model: Term Structure Estimation, Wartime Sovereign Debt, and the Ethics of War-Bond Markets}.
+
+\bibitem{GhoshNSS} Ghosh, S. (2006). \emph{The Nelson--Siegel--Svensson Model: Term Structure Estimation, Wartime Sovereign Debt, and the Ethics of War-Bond Markets}.
+
 \bibitem{BoG} Bank of Greece. Greek Government Securities and financial-market statistical data.
+
 \bibitem{BoI} Banca d'Italia. Financial Market and government-security statistical publications and time series.
 \end{thebibliography}
+
+\section*{Glossary}
+\begin{description}[style=nextline]
+
+\item[Discount factor] Present value of one unit payable at a future maturity.
+
+\item[Spot yield] Continuously compounded yield on a zero-coupon claim at a given maturity.
+
+\item[Forward rate] Instantaneous marginal rate implied by the term structure.
+
+\item[Yield to maturity] Internal rate of return summarizing the discounted value of a bond's contractual cash flows.
+
+\item[Zero-coupon bond] Bond that pays principal only at maturity.
+
+\item[NSS model] Nelson--Siegel--Svensson parametric representation of a yield curve.
+
+\item[Bootstrapping] Recovery of discount factors from security prices and contractual cash flows.
+
+\item[Term structure] Maturity-dependent relationship among yields, rates, or discount factors.
+
+\item[Sovereign risk] Risk associated with future government repayment, restructuring, inflation, liquidity, or policy conditions.
+
+\item[Financial repression] Policy-induced suppression or constraint of market interest rates and financial allocation.
+
+\item[Levenberg--Marquardt] Nonlinear least-squares algorithm interpolating between gradient descent and Gauss--Newton methods.
+\end{description}
 
 \end{document}
