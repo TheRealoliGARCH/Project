@@ -3,13 +3,13 @@ name: Rebuild everything and replace paper
 on:
   workflow_dispatch:
   push:
-    branches: [main, nss-core-implementation, fix/repository-test-errors]
+    branches: [main]
     paths-ignore:
       - 'paper/nss_discount_curves.pdf'
       - 'paper/generated_empirical_results.tex'
       - 'paper/generated/**'
   pull_request:
-    branches: [main, nss-core-implementation]
+    branches: [main]
 
 permissions:
   contents: write
