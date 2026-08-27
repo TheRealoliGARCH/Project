@@ -17,9 +17,9 @@ jobs:
       - name: Install plotting dependency
         run: python -m pip install matplotlib
       - name: Run empirical estimation
-        run: python empirical/run_comparison.py
+        run: python -m empirical.run_comparison
       - name: Generate discount-factor plot
-        run: python empirical/plot_comparison.py
+        run: python -m empirical.plot_comparison
       - name: Run unit and regression tests
         run: python -m unittest discover -s tests -v
       - name: Upload empirical outputs
