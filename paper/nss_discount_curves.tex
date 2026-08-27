@@ -1,0 +1,93 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}{Proposition}[section]
+
+\title{Nelson--Siegel--Svensson Estimation of Greek and Italian Sovereign Discount Curves}
+\author{Soumadeep Ghosh}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This paper presents a reproducible comparison of Greek and Italian sovereign discount curves. Official benchmark yields are transformed according to an explicit modelling convention, fitted separately with the Nelson--Siegel--Svensson model, and converted into model-implied discount factors. The empirical tables and figure are generated automatically by the repository pipeline.
+\end{abstract}
+
+\section{Discount Factors}
+
+\begin{definition}[Discount factor]
+For maturity $m$, the discount factor $D(m)$ is the present value of one unit payable at maturity under a specified pricing convention.
+\end{definition}
+
+Under continuous compounding,
+\begin{equation}
+D(m)=\exp[-m y(m)],
+\end{equation}
+where $y(m)$ is the continuously compounded spot yield.
+
+Observed sovereign benchmark yields-to-maturity are not themselves directly observed zero-coupon spot rates. Accordingly, the repository records its transformation convention explicitly and interprets all resulting discount factors as model-implied quantities.
+
+\section{Nelson--Siegel--Svensson Specification}
+
+Let $\theta=(\beta_0,\beta_1,\beta_2,\beta_3,\tau_1,\tau_2)$ with $\tau_1,\tau_2>0$. The NSS spot curve is
+\begin{align}
+y(m;\theta)={}&\beta_0+\beta_1\frac{1-e^{-m/\tau_1}}{m/\tau_1}\\
+&+\beta_2\left(\frac{1-e^{-m/\tau_1}}{m/\tau_1}-e^{-m/\tau_1}\right)\\
+&+\beta_3\left(\frac{1-e^{-m/\tau_2}}{m/\tau_2}-e^{-m/\tau_2}\right).
+\end{align}
+
+For country $c\in\{\mathrm{GR},\mathrm{IT}\}$, the model-implied discount curve is
+\begin{equation}
+\hat D_c(m)=\exp[-m y(m;\hat\theta_c)].
+\end{equation}
+
+The bilateral comparison is
+\begin{equation}
+\Delta D(m)=\hat D_{\mathrm{GR}}(m)-\hat D_{\mathrm{IT}}(m).
+\end{equation}
+
+\section{Reproducible Empirical Pipeline}
+
+The workflow executes the sequence
+\begin{center}
+raw data $\rightarrow$ estimation $\rightarrow$ plot generation $\rightarrow$ tests $\rightarrow$ generated results $\rightarrow$ PDF compilation.
+\end{center}
+
+The empirical material below is generated automatically from the current repository outputs.
+
+\input{generated_empirical_results.tex}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.9\textwidth]{generated/greece_italy_discount_factors_2025-06.png}
+\caption{Greece and Italy NSS model-implied discount factors for the repository's June 2025 comparison period.}
+\end{figure}
+
+\section{Reproducibility and Interpretation}
+
+The pipeline succeeds only when empirical estimation, visualization, and the complete unit and regression suite succeed before paper publication. The resulting PDF therefore remains conditional on the tracked data, the declared transformation assumption, and the NSS implementation tested by continuous integration.
+
+\begin{thebibliography}{9}
+\bibitem{nelson-siegel}
+Nelson, C. R. and Siegel, A. F. (1987).
+Parsimonious modeling of yield curves.
+\emph{Journal of Business}, 60(4), 473--489.
+
+\bibitem{svensson}
+Svensson, L. E. O. (1994).
+Estimating and interpreting forward interest rates: Sweden 1992--1994.
+\emph{NBER Working Paper}.
+\end{thebibliography}
+
+\end{document}
