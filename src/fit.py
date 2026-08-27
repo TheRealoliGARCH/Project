@@ -5,7 +5,7 @@ from __future__ import annotations
 from itertools import product
 from typing import Sequence
 
-from nss import NSSParameters, spot_yield, rmse
+from .nss import NSSParameters, spot_yield, rmse
 
 
 def _solve_linear(a: list[list[float]], b: list[float]) -> list[float]:
@@ -49,7 +49,7 @@ def fit_nss_grid(
         if tau1 <= 0 or tau2 <= 0 or tau1 == tau2:
             continue
         x = [_loadings(m, tau1, tau2) for m in maturities]
-        xtx = [[sum(row[i] * row[j] for row in x) for j in range(4)] for i in range(4)]
+        xtx = [[sum(row[i] * row[j] for row in x) for i in range(4)] for j in range(4)]
         xty = [sum(row[i] * y for row, y in zip(x, yields)) for i in range(4)]
         try:
             beta = _solve_linear(xtx, xty)
