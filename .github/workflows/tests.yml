@@ -7,12 +7,28 @@ on:
     branches: [main]
 
 jobs:
-  unit-tests:
+  empirical-pipeline:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Run unit tests
+      - name: Install plotting dependency
+        run: python -m pip install matplotlib
+      - name: Run empirical estimation
+        run: python empirical/run_comparison.py
+      - name: Generate discount-factor plot
+        run: python empirical/plot_comparison.py
+      - name: Run unit and regression tests
         run: python -m unittest discover -s tests -v
+      - name: Upload empirical outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: greece-italy-nss-2025-06
+          path: |
+            results/nss_parameters_2025-06.csv
+            results/discount_factors_2025-06.csv
+            results/TRANSFORMATION_ASSUMPTION.txt
+            results/greece_italy_discount_factors_2025-06.png
+          if-no-files-found: error
