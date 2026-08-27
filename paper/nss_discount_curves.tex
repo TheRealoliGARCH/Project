@@ -1,0 +1,509 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{enumitem}
+\pgfplotsset{compat=1.18}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}{Corollary}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+
+\title{Nelson--Siegel--Svensson Estimation of Greek and Italian Sovereign Discount Curves}
+\author{Soumadeep Ghosh}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A discount factor converts a future unit of currency into its time-zero present value. Under continuous compounding, the discount factor at maturity $m$ is $D(m)=\exp[-m y(m)]$, where $y(m)$ is the continuously compounded zero-coupon spot yield. This paper develops a reproducible framework for comparing Greek and Italian sovereign discount curves using the Nelson--Siegel--Svensson (NSS) model. The central methodological distinction is between coupon-bond yields-to-maturity, which summarize multiple cash flows, and zero-coupon spot rates, which directly determine discount factors. We formulate country-specific NSS estimation, discuss identification and nonlinear optimization, derive the discount-factor spread, and specify a reproducible data and software architecture. A preliminary Greek cross-section illustrates the procedure; the Italian estimation is to be completed only after extraction of a sufficiently dense, common-date official Italian maturity cross-section. The framework is extended conceptually to statistics, machine learning, welfare economics, political economy, geopolitics, and sovereign risk.
+\end{abstract}
+
+\section{Introduction}
+
+A financial claim payable at a future date is not generally equivalent in present value to the same nominal claim payable today. The mathematical object that represents this intertemporal transformation is the discount factor.
+
+For maturity $m$ and continuously compounded spot yield $y(m)$,
+\begin{equation}
+D(m)=e^{-m y(m)}.
+\end{equation}
+
+Under annual effective compounding with rate $r_m$,
+\begin{equation}
+D(m)=\frac{1}{(1+r_m)^m}.
+\end{equation}
+
+The central empirical question is how to construct $D(m)$ from observed sovereign-bond data when the available instruments are predominantly coupon-bearing government securities.
+
+\section{Discount Factors and the Term Structure}
+
+\begin{definition}[Discount factor]
+The discount factor $D(m)$ is the time-zero price of a claim paying one unit of currency at maturity $m$, under a specified pricing and compounding convention.
+\end{definition}
+
+Let $P(m)$ denote the price of a zero-coupon bond paying one unit at maturity $m$. Then
+\begin{equation}
+D(m)=P(m).
+\end{equation}
+
+The instantaneous forward rate is
+\begin{equation}
+f(m)=-\frac{\partial}{\partial m}\ln D(m).
+\end{equation}
+
+Hence
+\begin{equation}
+D(m)=\exp\left(-\int_0^m f(s)\,ds\right).
+\end{equation}
+
+The continuously compounded spot yield is therefore
+\begin{equation}
+y(m)=\frac{1}{m}\int_0^m f(s)\,ds,
+\end{equation}
+so that
+\begin{equation}
+D(m)=e^{-m y(m)}.
+\end{equation}
+
+\section{Why Yield-to-Maturity Is Not a Zero-Coupon Yield}
+
+For a coupon-bearing government bond $i$,
+\begin{equation}
+P_i=\sum_{j=1}^{N_i-1}C_{ij}D(t_{ij})+(C_{iN_i}+F_i)D(T_i),
+\end{equation}
+where $C_{ij}$ are coupon payments, $F_i$ is principal, and $T_i$ is final maturity.
+
+Its yield-to-maturity $\hat y_i$ is an internal rate of return satisfying an equation of the form
+\begin{equation}
+P_i=\sum_{j=1}^{N_i}\frac{CF_{ij}}{(1+\hat y_i)^{t_{ij}}},
+\end{equation}
+under the selected compounding convention. Consequently, $\hat y_i$ summarizes several discount factors rather than uniquely identifying $D(T_i)$.
+
+\begin{proposition}
+A maturity-indexed collection of coupon-bond yields-to-maturity does not, without additional assumptions, constitute the zero-coupon discount curve.
+\end{proposition}
+
+\begin{proof}
+The price of each coupon bond depends on all discount factors associated with its cash-flow dates. Its yield-to-maturity compresses that collection into a scalar internal rate of return. The mapping from the entire discount function to individual yields is therefore many-to-one unless additional restrictions or instruments identify the underlying term structure.\end{proof}
+
+This observation motivates a parametric zero-coupon representation.
+
+\section{Nelson--Siegel--Svensson Model}
+
+Let
+\begin{equation}
+\theta=(\beta_0,\beta_1,\beta_2,\beta_3,\tau_1,\tau_2).
+\end{equation}
+
+The NSS instantaneous forward-rate specification is
+\begin{align}
+f(m;\theta)
+&=\beta_0+\beta_1e^{-m/\tau_1}
++\beta_2\frac{m}{\tau_1}e^{-m/\tau_1}
++\beta_3\frac{m}{\tau_2}e^{-m/\tau_2}.
+\end{align}
+
+Define
+\begin{equation}
+\Lambda(\mu)=\frac{1-e^{-\mu}}{\mu}.
+\end{equation}
+
+Then the spot-yield curve is
+\begin{align}
+y(m;\theta)
+&=\beta_0
++\beta_1\Lambda\left(\frac{m}{\tau_1}\right)
++\beta_2\left[\Lambda\left(\frac{m}{\tau_1}\right)-e^{-m/\tau_1}\right]
+\\
+&\quad+\beta_3\left[\Lambda\left(\frac{m}{\tau_2}\right)-e^{-m/\tau_2}\right].
+\end{align}
+
+The corresponding discount factor is
+\begin{equation}
+D(m;\theta)=e^{-m y(m;\theta)}.
+\end{equation}
+
+The boundary values are
+\begin{align}
+\lim_{m\to 0^+}y(m;\theta)&=\beta_0+\beta_1,\\
+\lim_{m\to\infty}y(m;\theta)&=\beta_0.
+\end{align}
+
+The parameter roles are summarized in Table~\ref{tab:parameters}.
+
+\begin{table}[ht]
+\centering
+\caption{NSS parameters and their interpretation.}
+\label{tab:parameters}
+\begin{tabular}{lll}
+\toprule
+Parameter & Mathematical role & Economic interpretation\\
+\midrule
+$\beta_0$ & Long-run loading & Long-run level\\
+$\beta_1$ & Monotone decaying loading & Short-end slope\\
+$\beta_2$ & First curvature loading & Medium-term hump\\
+$\beta_3$ & Second curvature loading & Additional curvature\\
+$\tau_1$ & First decay scale & Location of first curvature\\
+$\tau_2$ & Second decay scale & Location of second curvature\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Two-Country Estimation}
+
+Let $c\in\{\mathrm{GR},\mathrm{IT}\}$ denote Greece and Italy. For each country observe
+\begin{equation}
+\mathcal{Y}_c=\{(m_{i,c},\hat y_{i,c})\}_{i=1}^{n_c}.
+\end{equation}
+
+Estimate
+\begin{equation}
+\hat\theta_c
+=\arg\min_{\theta_c}
+\sum_{i=1}^{n_c}w_{i,c}
+\left[\hat y_{i,c}-y(m_{i,c};\theta_c)\right]^2.
+\end{equation}
+
+The implied curve is
+\begin{equation}
+\hat D_c(m)=e^{-m y(m;\hat\theta_c)}.
+\end{equation}
+
+The principal comparison is
+\begin{equation}
+\Delta D(m)=\hat D_{\mathrm{GR}}(m)-\hat D_{\mathrm{IT}}(m).
+\end{equation}
+
+\begin{proposition}
+For every $m>0$, $D_{\mathrm{GR}}(m)>D_{\mathrm{IT}}(m)$ if and only if $y_{\mathrm{GR}}(m)<y_{\mathrm{IT}}(m)$ under continuous compounding.
+\end{proposition}
+
+\begin{proof}
+The exponential function is strictly increasing. Since $m>0$, the inequality
+$e^{-m y_{\mathrm{GR}}}>e^{-m y_{\mathrm{IT}}}$ is equivalent to
+$-m y_{\mathrm{GR}}>-m y_{\mathrm{IT}}$, which is equivalent to
+$y_{\mathrm{GR}}<y_{\mathrm{IT}}$.\end{proof}
+
+\section{Preliminary Greek Estimate}
+
+A preliminary Greek cross-section used seven benchmark maturities. The resulting observations were approximately as follows.
+
+\begin{table}[ht]
+\centering
+\caption{Preliminary Greek sovereign benchmark yields.}
+\begin{tabular}{rrrrrrrr}
+\toprule
+Maturity & 3Y & 5Y & 7Y & 10Y & 15Y & 20Y & 30Y\\
+\midrule
+Yield (\%) & 2.90 & 3.18 & 3.40 & 3.79 & 3.93 & 4.12 & 4.47\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A preliminary nonlinear fit was approximately
+\begin{equation}
+\hat\theta_{\mathrm{GR}}
+=(0.10080,-0.06292,-0.08459,-0.15246,2.176,15.422).
+\end{equation}
+
+The fitted values were approximately:
+
+\begin{table}[ht]
+\centering
+\caption{Preliminary Greek NSS fit.}
+\begin{tabular}{rrr}
+\toprule
+Maturity & Observed yield (\%) & NSS fitted yield (\%)\\
+\midrule
+3 & 2.900 & 2.903\\
+5 & 3.180 & 3.159\\
+7 & 3.400 & 3.446\\
+10 & 3.790 & 3.741\\
+15 & 3.930 & 3.967\\
+20 & 4.120 & 4.102\\
+30 & 4.470 & 4.472\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The corresponding continuously compounded discount factors were approximately
+
+\begin{table}[ht]
+\centering
+\caption{Preliminary Greek discount factors.}
+\begin{tabular}{rr}
+\toprule
+Maturity & Discount factor\\
+\midrule
+3Y & 0.917\\
+5Y & 0.854\\
+7Y & 0.786\\
+10Y & 0.688\\
+15Y & 0.552\\
+20Y & 0.440\\
+30Y & 0.261\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+These values are model-implied and should not be confused with directly observed zero-coupon prices.
+
+\section{Identification of the Italian Curve}
+
+A symmetric empirical comparison requires an Italian maturity vector sufficiently rich to estimate the same NSS structure. It is methodologically inappropriate to infer a six-parameter Italian curve from only a handful of points without explicitly imposing additional constraints.
+
+Let the official Italian cross-section be
+\begin{equation}
+\mathcal{Y}_{\mathrm{IT}}
+=\{(m_i,\hat y_i)\}_{i=1}^{n_{\mathrm{IT}}}.
+\end{equation}
+
+The final empirical implementation should use the same valuation month, compatible maturity definitions, documented yield conventions, and transparent treatment of missing observations for both countries.
+
+\begin{proposition}[Symmetric information requirement]
+If the purpose of a cross-country comparison is to attribute differences in the estimated discount curves to economic rather than data-architecture differences, the two country datasets should have comparable information content or the estimation asymmetry must be explicitly disclosed.
+\end{proposition}
+
+\begin{proof}
+Suppose one curve is estimated from a dense cross-section while the other is determined largely by priors, interpolation, or constraints. Then differences between the fitted curves can arise from estimation uncertainty and model restrictions rather than underlying sovereign pricing information. Comparable information content reduces this confounding channel.\end{proof}
+
+\section{Optimization}
+
+Because the NSS objective is nonlinear in $(\tau_1,\tau_2)$, a robust strategy is to combine global initialization with local nonlinear refinement.
+
+For fixed $(\tau_1,\tau_2)$, the loading matrix is linear in $(\beta_0,\beta_1,\beta_2,\beta_3)$. Thus
+\begin{equation}
+\hat\beta=(X^\top W X)^{-1}X^\top W\hat y,
+\end{equation}
+when the inverse exists.
+
+The subsequent Levenberg--Marquardt step can be written
+\begin{equation}
+\left[J^\top WJ+\lambda\operatorname{diag}(J^\top WJ)\right]\delta
+=J^\top Wr.
+\end{equation}
+
+A multi-start strategy is desirable because the objective need not be globally convex in the decay constants.
+
+\subsection{Pseudo-code}
+
+\begin{verbatim}
+INPUT:
+    official Greece maturity-yield cross-section
+    official Italy maturity-yield cross-section
+    common valuation date
+    grids G1 and G2 for tau_1 and tau_2
+
+FOR c IN {Greece, Italy}:
+    best_loss <- infinity
+    best_theta <- null
+
+    FOR tau_1 IN G1:
+        FOR tau_2 IN G2:
+            build NSS factor-loading matrix X
+            estimate beta by weighted least squares
+            compute loss
+            retain promising starts
+
+    refine promising starts using Levenberg-Marquardt
+    impose tau_1 > 0 and tau_2 > 0
+    retain best admissible solution
+
+    FOR m on a common maturity grid:
+        y_c(m) <- NSS spot yield
+        D_c(m) <- exp(-m * y_c(m))
+
+OUTPUT:
+    y_Greece(m), y_Italy(m)
+    D_Greece(m), D_Italy(m)
+    Delta_D(m) = D_Greece(m) - D_Italy(m)
+\end{verbatim}
+
+\section{Reproducible Data Architecture}
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[
+box/.style={draw, rounded corners, minimum width=3.4cm, minimum height=1cm, align=center},
+arrow/.style={->,>=stealth,thick},
+node distance=1.5cm
+]
+\node[box] (gr) {Bank of Greece\\official cross-section};
+\node[box,right=2cm of gr] (it) {Banca d'Italia\\official cross-section};
+\node[box,below=of gr,xshift=3cm] (align) {Date, units, and\\definition alignment};
+\node[box,below=of align] (nss) {Country-specific\\NSS estimation};
+\node[box,below=of nss] (df) {Continuous spot and\\discount curves};
+\node[box,below=of df] (spread) {Greece--Italy\\discount-factor spread};
+\draw[arrow] (gr) -- (align);
+\draw[arrow] (it) -- (align);
+\draw[arrow] (align) -- (nss);
+\draw[arrow] (nss) -- (df);
+\draw[arrow] (df) -- (spread);
+\end{tikzpicture}
+\caption{Reproducible architecture for the sovereign discount-factor comparison.}
+\end{figure}
+
+\section{Statistics and Uncertainty}
+
+A small cross-section can produce unstable parameter estimates even when the in-sample residual is small. Relevant diagnostics therefore include:
+
+\begin{enumerate}[label=\alph*.]
+\item residual RMSE and maximum absolute residual;
+\item sensitivity to maturity weighting;
+\item sensitivity to starting values;
+\item sensitivity to omission of individual maturities;
+\item forward-rate plausibility;
+\item bootstrap uncertainty in $\theta$;
+\item out-of-sample forecasting performance where a time panel is available.
+\end{enumerate}
+
+If $\hat\theta^{(b)}$ is the estimate from bootstrap sample $b$, then pointwise uncertainty for the discount factor can be represented by
+\begin{equation}
+\left\{D(m;\hat\theta^{(b)})\right\}_{b=1}^B.
+\end{equation}
+
+\section{Machine Learning Extensions}
+
+A neural network can be used as a warm-start inference map
+\begin{equation}
+h_\phi:\mathbb{R}^n\rightarrow\mathbb{R}^6,
+\end{equation}
+with
+\begin{equation}
+\hat\theta=h_\phi(\hat y).
+\end{equation}
+
+A reconstruction objective is
+\begin{equation}
+L_{\mathrm{NN}}(\phi)
+=\frac{1}{T}\sum_{t=1}^{T}
+\left\|\hat y_t-y(m;h_\phi(\hat y_t))\right\|^2.
+\end{equation}
+
+The analytic NSS layer constrains the network output to an economically interpretable term-structure family. A Gaussian-process residual model may then be written
+\begin{equation}
+y(\cdot)\sim GP(\mu(\cdot),k(\cdot,\cdot)),
+\end{equation}
+with
+\begin{equation}
+\mu(m)=y(m;\hat\theta_{NSS}).
+\end{equation}
+
+\section{Economics and Welfare}
+
+A market discount curve should not be confused with a social discount function. A planner may write
+\begin{equation}
+W=\sum_{t=0}^{\infty}\delta^t U(C_t),
+\end{equation}
+whereas the market curve prices traded financial claims.
+
+Thus, in general,
+\begin{equation}
+D_{\mathrm{market}}(m)\neq D_{\mathrm{social}}(m).
+\end{equation}
+
+The distinction matters for climate policy, infrastructure, pensions, intergenerational transfers, and sovereign debt sustainability.
+
+\section{Political Economy, Geopolitics, and Sovereign Risk}
+
+A useful conceptual decomposition is
+\begin{equation}
+y_c(m)=r^*(m)+\pi_c(m)+\lambda_c(m)+\rho_c(m),
+\end{equation}
+where $r^*$ is a common baseline component, $\pi_c$ captures inflation-related effects, $\lambda_c$ captures liquidity and market-structure effects, and $\rho_c$ captures country-specific sovereign-risk effects.
+
+Then
+\begin{align}
+\frac{D_{\mathrm{GR}}(m)}{D_{\mathrm{IT}}(m)}
+&=\exp\left[-m\left(y_{\mathrm{GR}}(m)-y_{\mathrm{IT}}(m)\right)\right].
+\end{align}
+
+Geopolitical shocks, fiscal developments, monetary policy, political uncertainty, market liquidity, and international capital flows may all affect these components. The discount-factor spread is therefore informative but is not a pure measure of any single latent risk.
+
+\section{Warfare Economics}
+
+Sovereign borrowing conditions can become strategically important during large fiscal shocks, including war. A stylized financing identity is
+\begin{equation}
+G_t=T_t+\Delta B_t+\Delta M_t+F_t,
+\end{equation}
+where government expenditure is financed through taxes, borrowing, monetary financing, and other sources.
+
+Large issuance programs can change the shape of the yield curve through supply effects and segmentation. Financial repression can also suppress particular points on the curve. The Svensson extension provides additional curvature flexibility, but observed curvature must not automatically be attributed to war or financial repression; alternative explanations require empirical identification.
+
+\section{Cross-Disciplinary Interpretation}
+
+The mathematics of discounting has useful structural analogies across disciplines. In physics, exponential attenuation is represented by
+\begin{equation}
+N(t)=N_0e^{-kt},
+\end{equation}
+whereas the financial discount function is
+\begin{equation}
+D(m)=e^{-m y(m)}.
+\end{equation}
+
+In survival analysis, a survival function can be written
+\begin{equation}
+S(t)=\exp\left(-\int_0^t h(s)\,ds\right),
+\end{equation}
+which has the same cumulative-rate mathematical architecture as
+\begin{equation}
+D(m)=\exp\left(-\int_0^m f(s)\,ds\right).
+\end{equation}
+
+These analogies concern mathematical structure, not substantive identity. Financial discounting remains an equilibrium pricing phenomenon, whereas physical attenuation and biological hazard have different ontologies.
+
+In psychology and philosophy, intertemporal preference raises the separate question of how individuals or societies should value future outcomes. A market discount factor should therefore not be treated as a direct measure of impatience, mental state, morality, or social welfare.
+
+\section{Conclusion}
+
+The central object of this paper is
+\begin{equation}
+D(m)=e^{-m y(m)}.
+\end{equation}
+
+The main methodological result is that a rigorous Greece--Italy discount-factor comparison should proceed from comparable official sovereign-security data to country-specific zero-coupon term structures, preferably through NSS estimation or instrument-level bootstrapping, rather than mechanically equating coupon-bond yields with spot rates.
+
+The final empirical object is
+\begin{equation}
+\Delta D(m)=D_{\mathrm{GR}}(m)-D_{\mathrm{IT}}(m).
+\end{equation}
+
+A complete empirical study requires a sufficiently rich, common-date Italian maturity cross-section. Until that information is extracted from the official source, the Greek fit can be treated as a preliminary demonstration, but a symmetric Italy--Greece NSS result should not be invented.
+
+\section*{Glossary}
+\begin{description}
+\item[Discount factor] Present value of one unit payable at a future maturity.
+\item[Spot yield] Continuously compounded yield on a zero-coupon claim at a given maturity.
+\item[Forward rate] Instantaneous marginal rate implied by the term structure.
+\item[Yield to maturity] Internal rate of return summarizing the discounted value of a bond's contractual cash flows.
+\item[Zero-coupon bond] Bond that pays principal only at maturity.
+\item[NSS model] Nelson--Siegel--Svensson parametric representation of a yield curve.
+\item[Bootstrapping] Recovery of discount factors from security prices and contractual cash flows.
+\item[Term structure] Maturity-dependent relationship among yields, rates, or discount factors.
+\item[Sovereign risk] Risk associated with future government repayment, restructuring, inflation, liquidity, or policy conditions.
+\item[Financial repression] Policy-induced suppression or constraint of market interest rates and financial allocation.
+\item[Levenberg--Marquardt] Nonlinear least-squares algorithm interpolating between gradient descent and Gauss--Newton methods.
+\end{description}
+
+\begin{thebibliography}{99}
+\bibitem{NelsonSiegel} Nelson, C. R. and Siegel, A. F. (1987). Parsimonious Modeling of Yield Curves. \emph{Journal of Business}, 60(4), 473--489.
+\bibitem{Svensson} Svensson, L. E. O. (1994). Estimating and Interpreting Forward Interest Rates: Sweden 1992--1994. NBER Working Paper No. 4871.
+\bibitem{DieboldLi} Diebold, F. X. and Li, C. (2006). Forecasting the Term Structure of Government Bond Yields. \emph{Journal of Econometrics}, 130(2), 337--364.
+\bibitem{BIS} Bank for International Settlements (2005). \emph{Zero-Coupon Yield Curves: Technical Documentation}. BIS Papers No. 25.
+\bibitem{RasmussenWilliams} Rasmussen, C. E. and Williams, C. K. I. (2006). \emph{Gaussian Processes for Machine Learning}. MIT Press.
+\bibitem{GhoshNSS} Ghosh, S. \emph{The Nelson--Siegel--Svensson Model: Term Structure Estimation, Wartime Sovereign Debt, and the Ethics of War-Bond Markets}.
+\bibitem{BoG} Bank of Greece. Greek Government Securities and financial-market statistical data.
+\bibitem{BoI} Banca d'Italia. Financial Market and government-security statistical publications and time series.
+\end{thebibliography}
+
+\end{document}
