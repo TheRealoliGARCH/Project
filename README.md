@@ -4,7 +4,7 @@ This repository contains reproducible research for sovereign term-structure and 
 
 ## Current paper
 
-- `paper/Nelson-Siegel-Svensson Estimation of Greek and Italian Sovereign Discount Curves.tex` — Nelson--Siegel--Svensson Estimation of Greek and Italian Sovereign Discount Curves
+- `paper/nss_discount_curves.tex` — Nelson--Siegel--Svensson Estimation of Greek and Italian Sovereign Discount Curves
 
 The paper distinguishes coupon-bond yields-to-maturity from zero-coupon spot yields and defines the implied discount factor under continuous compounding as
 
