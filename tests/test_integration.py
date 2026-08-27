@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 
 from src.acquisition import capture_text, load_captured_text
-from src.data_contract import common_valuation_date
+from src.data_contract import require_common_date
 from src.parsers import parse_bank_of_greece_row, parse_banca_d_italia_bmk0100_row
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -27,7 +27,7 @@ class FixtureIntegrationTests(unittest.TestCase):
         gr = parse_bank_of_greece_row("2026-06-30", gr_cells, "fixture://gr")
         it = parse_banca_d_italia_bmk0100_row("2026-06-30", it_cells, "fixture://it")
 
-        self.assertEqual(common_valuation_date(gr, it), "2026-06-30")
+        self.assertEqual(require_common_date(gr, it), "2026-06-30")
         self.assertEqual(len(gr), 7)
         self.assertEqual(len(it), 4)
         self.assertAlmostEqual(gr[0].yield_value, 0.029)
