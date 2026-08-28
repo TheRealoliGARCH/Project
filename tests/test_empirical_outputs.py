@@ -17,20 +17,31 @@ class EmpiricalOutputTests(unittest.TestCase):
         self.assertGreater(len(self.rows), 0)
         self.assertEqual(
             list(self.rows[0]),
-            ["maturity_years", "greece_discount_factor", "italy_discount_factor", "difference_gr_minus_it"],
+            [
+                "maturity_years",
+                "greece_discount_factor",
+                "italy_discount_factor",
+                "india_discount_factor",
+                "difference_gr_minus_it",
+                "difference_gr_minus_in",
+                "difference_it_minus_in",
+            ],
         )
         maturities = [float(r["maturity_years"]) for r in self.rows]
         self.assertEqual(maturities, sorted(maturities))
         self.assertEqual(len(maturities), len(set(maturities)))
 
-    def test_discount_factor_difference_identity(self):
+    def test_discount_factor_difference_identities(self):
         for row in self.rows:
             gr = float(row["greece_discount_factor"])
             it = float(row["italy_discount_factor"])
-            delta = float(row["difference_gr_minus_it"])
+            ind = float(row["india_discount_factor"])
             self.assertGreater(gr, 0.0)
             self.assertGreater(it, 0.0)
-            self.assertAlmostEqual(delta, gr - it, places=12)
+            self.assertGreater(ind, 0.0)
+            self.assertAlmostEqual(float(row["difference_gr_minus_it"]), gr - it, places=12)
+            self.assertAlmostEqual(float(row["difference_gr_minus_in"]), gr - ind, places=12)
+            self.assertAlmostEqual(float(row["difference_it_minus_in"]), it - ind, places=12)
 
 
 if __name__ == "__main__":
