@@ -1,4 +1,4 @@
-"""Deterministic plotting for the Greece--Italy NSS discount-factor comparison."""
+"""Deterministic plotting for the Greece--Italy--India NSS discount-factor comparison."""
 import csv
 from pathlib import Path
 
@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "results"
 INPUT = RESULTS / "discount_factors_2025-06.csv"
-OUTPUT = RESULTS / "greece_italy_discount_factors_2025-06.png"
+OUTPUT = RESULTS / "greece_italy_india_discount_factors_2025-06.png"
 
 
 def read_rows():
@@ -20,12 +20,14 @@ def main():
     m = [float(r["maturity_years"]) for r in rows]
     gr = [float(r["greece_discount_factor"]) for r in rows]
     it = [float(r["italy_discount_factor"]) for r in rows]
+    ind = [float(r["india_discount_factor"]) for r in rows]
     plt.figure(figsize=(8, 5))
     plt.plot(m, gr, label="Greece")
     plt.plot(m, it, label="Italy")
+    plt.plot(m, ind, label="India")
     plt.xlabel("Maturity (years)")
     plt.ylabel("NSS model-implied discount factor")
-    plt.title("Greece and Italy Discount Factors, June 2025")
+    plt.title("Greece, Italy and India Discount Factors, June 2025")
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
