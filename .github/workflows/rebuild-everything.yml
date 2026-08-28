@@ -46,7 +46,7 @@ jobs:
       - name: Prepare generated figure
         run: |
           mkdir -p paper/generated
-          cp results/greece_italy_discount_factors_2025-06.png paper/generated/greece_italy_discount_factors_2025-06.png
+          cp results/greece_italy_india_discount_factors_2025-06.png paper/generated/greece_italy_india_discount_factors_2025-06.png
 
       - name: Compile regenerated paper
         uses: xu-cheng/latex-action@v3
@@ -67,9 +67,9 @@ jobs:
             results/nss_parameters_2025-06.csv
             results/discount_factors_2025-06.csv
             results/TRANSFORMATION_ASSUMPTION.txt
-            results/greece_italy_discount_factors_2025-06.png
+            results/greece_italy_india_discount_factors_2025-06.png
             paper/generated_empirical_results.tex
-            paper/generated/greece_italy_discount_factors_2025-06.png
+            paper/generated/greece_italy_india_discount_factors_2025-06.png
             paper/nss_discount_curves.pdf
           if-no-files-found: error
 
@@ -78,10 +78,10 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add paper/nss_discount_curves.pdf paper/generated_empirical_results.tex paper/generated/greece_italy_discount_factors_2025-06.png
+          git add paper/nss_discount_curves.pdf paper/generated_empirical_results.tex paper/generated/greece_italy_india_discount_factors_2025-06.png
           if git diff --cached --quiet; then
             echo 'Paper already matches regenerated output.'
           else
-            git commit -m 'Regenerate empirical paper and artifacts'
+            git commit -m 'Regenerate three-way empirical paper and artifacts'
             git push
           fi
