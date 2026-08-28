@@ -20,7 +20,7 @@ def main():
     parameters = read_rows("nss_parameters_2025-06.csv")
     discounts = read_rows("discount_factors_2025-06.csv")
     lines = [
-        "\\section{Reproducible June 2025 Greece--Italy Results}",
+        "\\section{Reproducible June 2025 Greece--Italy--India Results}",
         "This section is generated automatically by the repository workflow from the empirical output files. The underlying inputs are benchmark yields transformed according to the repository's declared modeling convention; the resulting curves are therefore NSS model-implied discount factors rather than directly observed zero-coupon discount factors.",
         "",
         "\\begin{table}[ht]",
@@ -44,16 +44,18 @@ def main():
         "",
         "\\begin{table}[ht]",
         "\\centering",
-        "\\caption{NSS model-implied Greece--Italy discount-factor comparison.}",
-        "\\begin{tabular}{rrrr}",
+        "\\caption{NSS model-implied three-way discount-factor comparison.}",
+        "\\begin{tabular}{rrrrrrr}",
         "\\toprule",
-        "Maturity & Greece & Italy & $\\Delta D= D_{\\mathrm{GR}}-D_{\\mathrm{IT}}$\\\\",
+        "Maturity & Greece & Italy & India & $D_{GR}-D_{IT}$ & $D_{GR}-D_{IN}$ & $D_{IT}-D_{IN}$\\\\",
         "\\midrule",
     ]
     for row in discounts:
         lines.append(
             f"{float(row['maturity_years']):.1f} & {float(row['greece_discount_factor']):.8f} & "
-            f"{float(row['italy_discount_factor']):.8f} & {float(row['difference_gr_minus_it']):.8f}\\\\"
+            f"{float(row['italy_discount_factor']):.8f} & {float(row['india_discount_factor']):.8f} & "
+            f"{float(row['difference_gr_minus_it']):.8f} & {float(row['difference_gr_minus_in']):.8f} & "
+            f"{float(row['difference_it_minus_in']):.8f}\\\\"
         )
     lines += [
         "\\bottomrule",
@@ -62,8 +64,8 @@ def main():
         "",
         "\\begin{figure}[ht]",
         "\\centering",
-        "\\includegraphics[width=0.9\\textwidth]{generated/greece_italy_discount_factors_2025-06.png}",
-        "\\caption{Automatically generated NSS model-implied discount-factor comparison.}",
+        "\\includegraphics[width=0.9\\textwidth]{generated/greece_italy_india_discount_factors_2025-06.png}",
+        "\\caption{Automatically generated NSS model-implied Greece--Italy--India discount-factor comparison.}",
         "\\end{figure}",
         "",
     ]
