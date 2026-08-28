@@ -18,9 +18,18 @@ https://www.bancaditalia.it/pubblicazioni/mercato-finanziario/2026-mercato-finan
 
 The recorded series are gross yields to maturity for benchmark BTP maturities 3, 5, 10 and 30 years. CCT is excluded.
 
+## Reserve Bank of India
+
+Source: Reserve Bank of India, `Government Securities Market`, observed June 19, 2025.
+
+Official page:
+https://www.rbi.org.in/home.aspx/scripts/webservice/Scripts/CurrencyData.aspx
+
+The raw file records the RBI-reported yields for 7.06% GS 2028, 6.75% GS 2029, 6.79% GS 2034, 6.92% GS 2039 and 7.09% GS 2054. Maturity in years is calculated as the approximate remaining time from the observation date to the stated calendar maturity year, using the security labels as the documented maturity anchors. These are therefore residual-maturity approximations rather than an RBI-published standardized tenor grid.
+
 ## Period convention
 
-`2025-06` is a monthly comparison period, not an assertion that both central banks published observations at the same intraday timestamp.
+`2025-06` is a common June 2025 comparison period, not an assertion that all three central banks published observations at the same intraday timestamp.
 
 ## Transformation boundary
 
