@@ -1,0 +1,20 @@
+name: U6 Global Uniqueness
+
+on:
+  push:
+    branches: [main, u6-global-uniqueness]
+  pull_request:
+    branches: [main]
+
+jobs:
+  u6:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run U6 tests
+        run: python -m unittest discover -s tests -p 'test_u6_uniqueness.py' -v
+      - name: Run full regression suite
+        run: python -m unittest discover -s tests -v
