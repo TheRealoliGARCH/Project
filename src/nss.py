@@ -29,21 +29,26 @@ def _lambda(x: float) -> float:
     return -math.expm1(-x) / x
 
 
+def loadings(maturity: float, tau1: float, tau2: float) -> tuple[float, float, float, float]:
+    """Return the canonical NSS linear loadings for one maturity."""
+    if maturity < 0:
+        raise ValueError("maturity must be non-negative")
+    if tau1 <= 0 or tau2 <= 0:
+        raise ValueError("tau1 and tau2 must be strictly positive")
+    x1 = maturity / tau1
+    x2 = maturity / tau2
+    l1 = _lambda(x1)
+    l2 = _lambda(x2)
+    return (1.0, l1, l1 - math.exp(-x1), l2 - math.exp(-x2))
+
+
 def spot_yield(maturity: float, p: NSSParameters) -> float:
     """Continuously compounded NSS zero-coupon spot yield."""
     if maturity < 0:
         raise ValueError("maturity must be non-negative")
     p.validate()
-    x1 = maturity / p.tau1
-    x2 = maturity / p.tau2
-    l1 = _lambda(x1)
-    l2 = _lambda(x2)
-    return (
-        p.beta0
-        + p.beta1 * l1
-        + p.beta2 * (l1 - math.exp(-x1))
-        + p.beta3 * (l2 - math.exp(-x2))
-    )
+    l0, l1, l2, l3 = loadings(maturity, p.tau1, p.tau2)
+    return p.beta0 * l0 + p.beta1 * l1 + p.beta2 * l2 + p.beta3 * l3
 
 
 def discount_factor(maturity: float, p: NSSParameters) -> float:
