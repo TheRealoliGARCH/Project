@@ -30,7 +30,7 @@ $$S_i=f_i(G_{m,i},T_i,E_i),$$
 
 where $T_i$ is threat and $E_i$ is external security contribution, including cooperative or alliance effects.
 
-The executable kernel supplies a simple concave benchmark
+The executable kernel supplies a simple concave security benchmark
 
 $$S_i=1+A_iG_{m,i}^{\eta_i}+E_i-T_i,$$
 
@@ -61,6 +61,14 @@ $$
 \frac{\partial S_i}{\partial G_{m,i}}.
 $$
 
+For the deterministic benchmark $Y=10$, $\alpha=1/2$, $A=1$, $\eta=1/2$, $T=E=0$, writing $s=\sqrt{G_m}$ gives
+
+$$3s^2+2s-10=0,$$
+
+so the interior benchmark optimum is
+
+$$G_m^*=\left(\frac{\sqrt{31}-1}{3}\right)^2\approx2.318274586.$$
+
 The kernel reports the finite-difference FOC residual rather than treating numerical proximity as an exact identity.
 
 ## 5. Second-order condition
@@ -69,7 +77,7 @@ A strict local welfare maximum requires
 
 $$\frac{\partial^2W_i}{\partial G_{m,i}^2}<0.$$
 
-The test suite verifies this condition at an analytically known benchmark optimum.
+The test suite verifies this condition at the corrected analytically known benchmark optimum.
 
 ## 6. Strategic allocation consistency
 
