@@ -1,0 +1,1 @@
+Modeling convention only: documented benchmark yield-to-maturity decimals are supplied directly to the NSS objective as continuously compounded spot-yield proxies.
