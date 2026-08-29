@@ -166,7 +166,8 @@ def strategic_allocation_residual(weights: Sequence[float], states: Sequence[flo
 def validate_u3_point(params: U3Parameters, defense: float, security_fn: SecurityFunction) -> None:
     """Validate an interior U3 candidate point."""
     params.validate()
-    resource_constraint(params.output, defense)
+    if not isfinite(defense) or not 0.0 < defense < params.output:
+        raise ValueError("defense must lie strictly between zero and output for an interior candidate")
     security = security_fn(defense, params.threat, params.external_security)
     if not isfinite(security) or security <= 0:
         raise ValueError("candidate security must be finite and positive")
