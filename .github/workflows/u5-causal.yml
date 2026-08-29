@@ -1,0 +1,22 @@
+name: U5 Empirical Causal Validation
+
+on:
+  push:
+    branches: ["main", "u5-empirical-causal-validation"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  u5:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Python sources
+        run: python -m compileall -q src tests
+      - name: Run U5 tests
+        run: python -m unittest discover -s tests -p 'test_u5_causal.py' -v
+      - name: Run complete regression suite
+        run: python -m unittest discover -s tests -v
