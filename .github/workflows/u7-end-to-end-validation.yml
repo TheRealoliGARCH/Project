@@ -1,0 +1,20 @@
+name: U7 End-to-End Validation
+
+on:
+  push:
+    branches: [main, u7-end-to-end-validation]
+  pull_request:
+    branches: [main]
+
+jobs:
+  u7:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run U7 tests
+        run: python -m unittest discover -s tests -p 'test_u7_end_to_end.py' -v
+      - name: Run complete regression suite
+        run: python -m unittest discover -s tests -v
