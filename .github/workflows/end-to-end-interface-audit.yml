@@ -1,0 +1,50 @@
+name: End-to-End Interface Audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  interface-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install runtime dependency
+        run: python -m pip install numpy
+
+      - name: Run U1-U7 interface tests
+        run: |
+          python -m unittest discover -s tests -p 'test_*interface.py' -v
+
+      - name: Run observational recoverability tests
+        run: |
+          python -m unittest tests.test_u7_observational_recoverability -v
+
+      - name: Run complete regression suite
+        run: |
+          python -m unittest discover -s tests -v
+
+      - name: Verify interface modules are importable
+        run: |
+          python - <<'PY'
+          import src.u12_interface
+          import src.u23_interface
+          import src.u34_interface
+          import src.u45_interface
+          import src.u56_interface
+          import src.u67_interface
+          import src.u7_observational_recoverability
+          print('All interface modules imported successfully.')
+          PY
+
+      - name: Report audit completion
+        run: echo 'End-to-end U1-U7 interface audit completed successfully.'
