@@ -22,8 +22,8 @@ class TestU6Uniqueness(unittest.TestCase):
         self.assertFalse(conic_jacobian_symmetry_condition(1, 2, 3, 5, 7, 4, 1, 15))
 
     def test_divisibility_by_four_reference(self):
-        # The factor 2 in the Jacobian does not by itself imply divisibility
-        # by 4.  Under an even-integer coefficient/parity specialization it does.
+        # The Jacobian has an explicit factor 2. Under this even-integer
+        # coefficient specialization, the inner matrix is also even, giving 4.
         jac = jacobian_two_conics(1, 2, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20)
         self.assertTrue(all(value % 4 == 0 for row in jac for value in row))
 
