@@ -1,6 +1,6 @@
 # Project
 
-This repository contains reproducible research and computational verification for a unified sovereign political-financial framework, with an empirical foundation in sovereign term-structure and discount-factor analysis. The empirical work begins with a Greece--Italy Nelson--Siegel--Svensson (NSS) study and the theoretical program develops a modular U1--U7 verification architecture for a three-Republic political-financial system.
+This repository contains reproducible research and computational verification for a unified sovereign political-financial framework, with an empirical foundation in sovereign term-structure and discount-factor analysis. The empirical work includes a Greece--India--Italy Nelson--Siegel--Svensson (NSS) study and the theoretical program develops a modular U1--U7 verification architecture for a three-Republic political-financial system.
 
 ## Repository scope
 
@@ -15,7 +15,7 @@ The three-Republic development framework is intended to study Greece, India, and
 
 ## Current paper
 
-- `paper/nss_discount_curves.tex` — Nelson--Siegel--Svensson Estimation of Greek and Italian Sovereign Discount Curves
+- `paper/nss_discount_curves.tex` — Nelson--Siegel--Svensson Estimation of Greek, Indian, and Italian Sovereign Discount Curves
 
 The paper distinguishes coupon-bond yields-to-maturity from zero-coupon spot yields and defines the implied discount factor under continuous compounding as
 
@@ -23,7 +23,7 @@ $$
 D(m)=e^{-m y(m)}.
 $$
 
-The empirical workflow is designed to use comparable official Bank of Greece and Banca d'Italia maturity cross-sections before making a symmetric country comparison.
+The empirical workflow uses comparable official sovereign maturity cross-sections for Greece, India, and Italy before making the three-country comparison.
 
 ## Reproducibility principle
 
