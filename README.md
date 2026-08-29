@@ -34,6 +34,10 @@ The current roadmap is:
 6. **U6 — Global uniqueness:** establish conditions under which the compatible equilibrium is unique rather than merely existent.
 7. **U7 — End-to-end validation:** combine exact algebraic tests, numerical tests, statistical identification, Monte Carlo experiments, and empirical validation.
 
+### U1 status: algebraic closure kernel implemented
+
+The first executable U1 layer is now present in `src/algebraic_closure.py`, with deterministic tests in `tests/test_algebraic_closure.py`. It implements the three elementary symmetric invariants, the associated monic cubic, polynomial closure residuals, and permutation-invariance checks. The implementation uses only the Python standard library.
+
 The central object is the unified equilibrium set
 
 $$
