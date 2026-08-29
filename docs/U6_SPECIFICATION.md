@@ -45,7 +45,9 @@ $$
 \alpha x+\eta y+\phi=hx+by+g.
 $$
 
-U6 uses these exact formulas as an algebraic Jacobian regression reference. The conic results themselves do not establish uniqueness of the Project equilibrium.
+The factor $2$ in the Jacobian does not, by itself, imply that every Jacobian entry is divisible by $4$. Divisibility by $4$ additionally requires the corresponding linear forms to be even (for example, under an even-integer coefficient/parity specialization). U6 therefore tests the exact Jacobian formula directly and tests the stronger divisibility property only under an explicit parity specialization.
+
+U6 uses these formulas as an algebraic Jacobian regression reference. The conic results themselves do not establish uniqueness of the Project equilibrium.
 
 ## Verification boundary
 
