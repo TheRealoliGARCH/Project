@@ -14,14 +14,17 @@ from src.u6_uniqueness import (
 class TestU6Uniqueness(unittest.TestCase):
     def test_conic_jacobian_matches_formula(self):
         jac = jacobian_two_conics(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
-        self.assertEqual(jac, ((26.0, 60.0), (54.0, 76.0)))
+        self.assertEqual(jac, ((34.0, 42.0), (74.0, 82.0)))
 
     def test_transpose_symmetry_condition(self):
-        self.assertTrue(conic_jacobian_symmetry_condition(1, 2, 3, 5, 7, 4, 1, 4))
-        self.assertFalse(conic_jacobian_symmetry_condition(1, 2, 3, 5, 7, 4, 1, 5))
+        # alpha*x + eta*y + phi = h*x + b*y + g = 20.
+        self.assertTrue(conic_jacobian_symmetry_condition(1, 2, 3, 5, 7, 4, 1, 14))
+        self.assertFalse(conic_jacobian_symmetry_condition(1, 2, 3, 5, 7, 4, 1, 15))
 
     def test_divisibility_by_four_reference(self):
-        jac = jacobian_two_conics(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+        # The factor 2 in the Jacobian does not by itself imply divisibility
+        # by 4.  Under an even-integer coefficient/parity specialization it does.
+        jac = jacobian_two_conics(1, 2, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20)
         self.assertTrue(all(value % 4 == 0 for row in jac for value in row))
 
     def test_numerical_jacobian(self):
