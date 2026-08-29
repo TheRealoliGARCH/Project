@@ -1,3 +1,4 @@
+import math
 import unittest
 
 from src.nss import NSSParameters, loadings, spot_yield
@@ -13,12 +14,14 @@ class TestNSSLoadings(unittest.TestCase):
         ))
         self.assertAlmostEqual(spot_yield(maturity, p), expected, places=14)
 
-    def test_small_ratio_loading_is_finite(self):
-        basis = loadings(1e-12, 1.0, 2.0)
+    def test_small_ratio_loading_is_finite_and_matches_series(self):
+        maturity = 1e-12
+        basis = loadings(maturity, 1.0, 2.0)
         self.assertEqual(len(basis), 4)
-        self.assertTrue(all(value == value for value in basis))
-        self.assertAlmostEqual(basis[0], 1.0)
-        self.assertAlmostEqual(basis[1], 1.0, places=12)
+        self.assertTrue(all(math.isfinite(value) for value in basis))
+        x = maturity
+        expected = 1.0 - x / 2.0 + x * x / 6.0
+        self.assertAlmostEqual(basis[1], expected, places=15)
 
     def test_loadings_reject_invalid_parameters(self):
         with self.assertRaises(ValueError):
