@@ -47,7 +47,7 @@ def main():
         "\\caption{NSS model-implied three-way discount-factor comparison.}",
         "\\begin{tabular}{rrrrrrr}",
         "\\toprule",
-        "Maturity & Greece & India & Italy & $D_{GR}-D_{IN}$ & $D_{GR}-D_{IT}$ & $D_{IN}-D_{IT}$\\\\",
+        "Maturity & Greece & India & Italy & $D_{GR}-D_{IN}$ & $D_{GR}-D_{IT}$ & $D_{IT}-D_{IN}$\\\\",
         "\\midrule",
     ]
     for row in discounts:
@@ -55,7 +55,7 @@ def main():
             f"{float(row['maturity_years']):.1f} & {float(row['greece_discount_factor']):.8f} & "
             f"{float(row['india_discount_factor']):.8f} & {float(row['italy_discount_factor']):.8f} & "
             f"{float(row['difference_gr_minus_in']):.8f} & {float(row['difference_gr_minus_it']):.8f} & "
-            f"{float(row['difference_in_minus_it']):.8f}\\\\"
+            f"{float(row['difference_it_minus_in']):.8f}\\\\"
         )
     lines += [
         "\\bottomrule",
