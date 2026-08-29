@@ -13,7 +13,7 @@
 \newtheorem{definition}{Definition}[section]
 \newtheorem{proposition}{Proposition}[section]
 
-\title{Nelson--Siegel--Svensson Estimation of Greek and Italian Sovereign Discount Curves}
+\title{Nelson--Siegel--Svensson Estimation of Greek, Indian, and Italian Sovereign Discount Curves}
 \author{Soumadeep Ghosh}
 \date{}
 
@@ -21,7 +21,7 @@
 \maketitle
 
 \begin{abstract}
-This paper presents a reproducible comparison of Greek and Italian sovereign discount curves. Official benchmark yields are transformed according to an explicit modelling convention, fitted separately with the Nelson--Siegel--Svensson model, and converted into model-implied discount factors. The empirical tables and figure are generated automatically by the repository pipeline.
+This paper presents a reproducible comparison of Greek, Indian, and Italian sovereign discount curves. Official benchmark yields are transformed according to an explicit modelling convention, fitted separately with the Nelson--Siegel--Svensson model, and converted into model-implied discount factors. The empirical tables and figures are generated automatically by the repository pipeline.
 \end{abstract}
 
 \section{Discount Factors}
@@ -47,14 +47,21 @@ y(m;\theta)={}&\beta_0+\beta_1\frac{1-e^{-m/\tau_1}}{m/\tau_1}\\
 &+\beta_3\left(\frac{1-e^{-m/\tau_2}}{m/\tau_2}-e^{-m/\tau_2}\right).
 \end{align}
 
-For country $c\in\{\mathrm{GR},\mathrm{IT}\}$, the model-implied discount curve is
+For each country $c\in\{\mathrm{GR},\mathrm{IN},\mathrm{IT}\}$, the model-implied discount curve is
 \begin{equation}
 \hat D_c(m)=\exp[-m y(m;\hat\theta_c)].
 \end{equation}
 
-The bilateral comparison is
+The three-way discount-factor comparisons are
 \begin{equation}
-\Delta D(m)=\hat D_{\mathrm{GR}}(m)-\hat D_{\mathrm{IT}}(m).
+\Delta D_{GR,IT}(m)=\hat D_{\mathrm{GR}}(m)-\hat D_{\mathrm{IT}}(m),
+\end{equation}
+\begin{equation}
+\Delta D_{GR,IN}(m)=\hat D_{\mathrm{GR}}(m)-\hat D_{\mathrm{IN}}(m),
+\end{equation}
+and
+\begin{equation}
+\Delta D_{IT,IN}(m)=\hat D_{\mathrm{IT}}(m)-\hat D_{\mathrm{IN}}(m).
 \end{equation}
 
 \section{Reproducible Empirical Pipeline}
@@ -67,12 +74,6 @@ raw data $\rightarrow$ estimation $\rightarrow$ plot generation $\rightarrow$ te
 The empirical material below is generated automatically from the current repository outputs.
 
 \input{generated_empirical_results.tex}
-
-\begin{figure}[ht]
-\centering
-\includegraphics[width=0.9\textwidth]{generated/greece_italy_discount_factors_2025-06.png}
-\caption{Greece and Italy NSS model-implied discount factors for the repository's June 2025 comparison period.}
-\end{figure}
 
 \section{Reproducibility and Interpretation}
 
