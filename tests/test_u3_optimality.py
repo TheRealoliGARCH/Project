@@ -1,4 +1,5 @@
 import unittest
+from math import sqrt
 
 from src.u3_optimality import (
     U3Parameters,
@@ -32,13 +33,17 @@ class TestU3Optimality(unittest.TestCase):
         self.assertTrue(value == value)
 
     def test_foc_and_soc_at_benchmark_optimum(self):
-        # With S = 1 + sqrt(G), Y=10 and alpha=1/2,
-        # the analytic interior optimum is G=4.
+        # With S = 1 + sqrt(G), Y=10 and alpha=1/2, the FOC is
+        # 1/(10-G) = 1/(2 sqrt(G) (1+sqrt(G))).
+        # Therefore 3s^2 + 2s - 10 = 0 for s=sqrt(G), giving
+        # G* = ((sqrt(31)-1)/3)^2.
+        s_star = (sqrt(31.0) - 1.0) / 3.0
+        defense_star = s_star**2
         foc = welfare_foc_residual(
-            10.0, 4.0, 0.5, security_power, 0.0, 0.0, step=1e-5
+            10.0, defense_star, 0.5, security_power, 0.0, 0.0, step=1e-5
         )
         soc = welfare_soc(
-            10.0, 4.0, 0.5, security_power, 0.0, 0.0, step=1e-4
+            10.0, defense_star, 0.5, security_power, 0.0, 0.0, step=1e-4
         )
         self.assertAlmostEqual(foc, 0.0, places=7)
         self.assertLess(soc, 0.0)
@@ -68,6 +73,8 @@ class TestU3Optimality(unittest.TestCase):
         validate_u3_point(self.params, 4.0, security_power)
         with self.assertRaises(ValueError):
             validate_u3_point(self.params, 10.0, security_power)
+        with self.assertRaises(ValueError):
+            validate_u3_point(self.params, 0.0, security_power)
 
 
 if __name__ == '__main__':
