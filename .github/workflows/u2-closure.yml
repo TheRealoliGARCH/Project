@@ -1,0 +1,49 @@
+name: U2 Political-Financial-Security Closure
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'src/u2_closure.py'
+      - 'tests/test_u2_closure.py'
+      - 'docs/U2_SPECIFICATION.md'
+      - '.github/workflows/u2-closure.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  u2-closure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Compile U2 kernel and tests
+        run: python -m py_compile src/u2_closure.py tests/test_u2_closure.py
+
+      - name: Run U2 tests
+        run: python -m unittest tests.test_u2_closure -v
+
+      - name: Run complete regression suite
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Verify deterministic U2 reconstruction
+        run: |
+          python - <<'PY'
+          from src.u2_closure import default_parameters, political_map, financial_map, residual, security_map, sup_norm
+
+          p = default_parameters()
+          z = (0.0, 0.0, 0.0)
+          assert residual(z, z, z, z, p) == z
+          first = (political_map(z, z, p), financial_map(z, z, p), security_map(z, z, z, p))
+          second = (political_map(z, z, p), financial_map(z, z, p), security_map(z, z, z, p))
+          assert first == second
+          assert sup_norm(residual(z, z, z, z, p)) == 0.0
+          print('U2 deterministic reconstruction: PASS')
+          PY
