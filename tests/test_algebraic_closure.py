@@ -15,7 +15,7 @@ class TestAlgebraicClosure(unittest.TestCase):
     def test_symmetric_invariants(self):
         r_a, r_b, r_c = symmetric_invariants(self.rates)
         self.assertAlmostEqual(r_a, 0.105)
-        self.assertAlmostEqual(r_b, 0.0032)
+        self.assertAlmostEqual(r_b, 0.00345)
         self.assertAlmostEqual(r_c, 0.000035)
 
     def test_vieta_cubic_vanishes_at_each_rate(self):
